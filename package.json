@@ -1,0 +1,7 @@
+{
+  "name": "coaching-trainer",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Übungs-App: virtueller Coaching-Klient für angehende Coaches.",
+  "type": "module"
+}

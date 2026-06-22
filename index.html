@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>Coaching-Trainer – Übe mit einem virtuellen Klienten</title>
+<style>
+  :root{
+    --bg:#0f1419;
+    --panel:#1a2129;
+    --panel-2:#222c36;
+    --accent:#4f9da6;
+    --accent-2:#6fc3bf;
+    --text:#e8edf2;
+    --muted:#9aa7b2;
+    --client:#263340;
+    --coach:#2f5d54;
+    --danger:#c2554d;
+    --border:#2c3743;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;margin:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);color:var(--text);
+    display:flex;flex-direction:column;height:100dvh;overflow:hidden;
+  }
+  header{
+    padding:14px 16px;background:var(--panel);border-bottom:1px solid var(--border);
+    display:flex;align-items:center;gap:12px;flex-shrink:0;
+  }
+  header h1{font-size:16px;margin:0;font-weight:600;letter-spacing:.2px;}
+  header .sub{font-size:12px;color:var(--muted);margin-top:2px;}
+  header .left{flex:1;min-width:0;}
+  .btn{
+    border:none;border-radius:10px;padding:11px 16px;font-size:15px;font-weight:600;
+    cursor:pointer;background:var(--accent);color:#fff;transition:transform .05s ease,background .15s;
+  }
+  .btn:active{transform:scale(.97);}
+  .btn.ghost{background:var(--panel-2);color:var(--text);border:1px solid var(--border);}
+  .btn.small{padding:8px 12px;font-size:13px;}
+  .btn:disabled{opacity:.5;cursor:default;}
+
+  /* ---------- Setup screen ---------- */
+  #setup{flex:1;overflow-y:auto;padding:20px 16px 40px;-webkit-overflow-scrolling:touch;}
+  #setup .intro{max-width:680px;margin:0 auto 18px;color:var(--muted);font-size:14px;line-height:1.5;}
+  .grid{max-width:680px;margin:0 auto;display:grid;grid-template-columns:1fr;gap:12px;}
+  @media(min-width:620px){.grid{grid-template-columns:1fr 1fr;}}
+  .card{
+    background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:16px;
+    cursor:pointer;transition:border-color .15s,background .15s;
+  }
+  .card:hover{border-color:var(--accent);}
+  .card.selected{border-color:var(--accent);background:var(--panel-2);}
+  .card h3{margin:0 0 6px;font-size:15px;}
+  .card .tag{display:inline-block;font-size:11px;color:var(--accent-2);background:rgba(79,157,166,.12);
+    padding:2px 8px;border-radius:20px;margin-bottom:8px;}
+  .card p{margin:0;font-size:13px;color:var(--muted);line-height:1.45;}
+  .card.random{border-style:dashed;text-align:center;}
+  .start-bar{max-width:680px;margin:20px auto 0;display:flex;gap:10px;}
+  .start-bar .btn{flex:1;}
+
+  /* ---------- Chat screen ---------- */
+  #chat{display:none;flex-direction:column;flex:1;min-height:0;}
+  #messages{flex:1;overflow-y:auto;padding:16px 14px 8px;-webkit-overflow-scrolling:touch;}
+  .msg{max-width:84%;margin:0 0 12px;padding:11px 14px;border-radius:16px;font-size:15px;line-height:1.5;
+    white-space:pre-wrap;word-wrap:break-word;animation:pop .18s ease;}
+  @keyframes pop{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+  .msg.client{background:var(--client);border-bottom-left-radius:5px;align-self:flex-start;margin-right:auto;}
+  .msg.coach{background:var(--coach);border-bottom-right-radius:5px;align-self:flex-end;margin-left:auto;}
+  .msg .who{font-size:11px;color:var(--muted);margin-bottom:3px;display:block;}
+  #messages{display:flex;flex-direction:column;}
+  .typing{align-self:flex-start;color:var(--muted);font-style:italic;font-size:14px;margin-bottom:12px;padding:0 6px;}
+  .dots span{animation:blink 1.2s infinite both;}
+  .dots span:nth-child(2){animation-delay:.2s;}
+  .dots span:nth-child(3){animation-delay:.4s;}
+  @keyframes blink{0%,80%,100%{opacity:.2;}40%{opacity:1;}}
+
+  /* ---------- Input bar ---------- */
+  #inputbar{flex-shrink:0;border-top:1px solid var(--border);background:var(--panel);
+    padding:10px 12px calc(10px + env(safe-area-inset-bottom));display:flex;gap:8px;align-items:flex-end;}
+  #textInput{flex:1;resize:none;border:1px solid var(--border);background:var(--panel-2);color:var(--text);
+    border-radius:14px;padding:11px 14px;font-size:16px;line-height:1.4;max-height:120px;font-family:inherit;}
+  #textInput:focus{outline:none;border-color:var(--accent);}
+  .icon-btn{flex-shrink:0;width:48px;height:48px;border-radius:50%;border:none;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;background:var(--panel-2);color:var(--text);
+    border:1px solid var(--border);transition:background .15s,transform .05s;}
+  .icon-btn:active{transform:scale(.93);}
+  .icon-btn.send{background:var(--accent);border-color:var(--accent);}
+  .icon-btn.mic.recording{background:var(--danger);border-color:var(--danger);animation:pulse 1.2s infinite;}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(194,85,77,.5);}70%{box-shadow:0 0 0 12px rgba(194,85,77,0);}100%{box-shadow:0 0 0 0 rgba(194,85,77,0);}}
+  .icon-btn svg{width:22px;height:22px;}
+  #statusline{font-size:12px;color:var(--muted);text-align:center;padding:4px 12px 0;min-height:18px;}
+  .err{color:var(--danger);}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="left">
+    <h1 id="hTitle">Coaching-Trainer</h1>
+    <div class="sub" id="hSub">Wähle einen Klienten und beginne das Gespräch.</div>
+  </div>
+  <button class="btn ghost small" id="resetBtn" style="display:none;">Neu starten</button>
+</header>
+
+<!-- SETUP -->
+<section id="setup">
+  <div class="intro">
+    Dieser virtuelle Klient schildert dir ein Anliegen und reagiert auf deine Fragen wie ein echter Coachee.
+    Übe ein vollständiges Gespräch – von der Problemschilderung über Ziel, Auftrag und Lösungsbild bis zu konkreten Maßnahmen.
+    Tippe deine Fragen oder nutze das Mikrofon 🎤.
+  </div>
+  <div class="grid" id="personaGrid"></div>
+  <div class="start-bar">
+    <button class="btn" id="startBtn" disabled>Gespräch starten</button>
+  </div>
+</section>
+
+<!-- CHAT -->
+<section id="chat">
+  <div id="messages"></div>
+  <div id="statusline"></div>
+  <div id="inputbar">
+    <button class="icon-btn mic" id="micBtn" title="Spracheingabe" aria-label="Spracheingabe">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/>
+      </svg>
+    </button>
+    <textarea id="textInput" rows="1" placeholder="Deine Frage an den Klienten…"></textarea>
+    <button class="icon-btn send" id="sendBtn" title="Senden" aria-label="Senden">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+      </svg>
+    </button>
+  </div>
+</section>
+
+<script>
+/* =========================================================
+   KONFIGURATION
+   ========================================================= */
+// Endpunkt des Backend-Proxys. Bei Vercel bleibt das so.
+const API_ENDPOINT = "/api/chat";
+
+/* =========================================================
+   PERSONAS (feste Beispiele)
+   ========================================================= */
+const PERSONAS = [
+  {
+    id:"berufung",
+    name:"Sandra, 41 – Sinnkrise im Job",
+    tag:"Beruf",
+    short:"Erfolgreich, aber innerlich leer. Fragt sich, ob das alles war.",
+    brief:"Du bist Sandra, 41, Abteilungsleiterin in einem Konzern. Nach außen erfolgreich, aber seit Monaten fühlst du dich leer und fragst dich, ob dein Job noch zu dir passt. Du hast Angst, etwas wegzuwerfen, das du aufgebaut hast. Du bist nachdenklich, ein bisschen müde, sprichst nicht sofort über die tieferen Gefühle."
+  },
+  {
+    id:"fuehrung",
+    name:"Markus, 36 – Schwierige Mitarbeiterin",
+    tag:"Führung",
+    short:"Neue Führungskraft, ein Teammitglied blockiert und untergräbt ihn.",
+    brief:"Du bist Markus, 36, seit einem halben Jahr Teamleiter. Eine erfahrene Mitarbeiterin stellt dich ständig in Frage und du weißt nicht, wie du auftreten sollst, ohne autoritär oder schwach zu wirken. Du bist angespannt, lösungsorientiert, manchmal etwas defensiv und rechtfertigst dich schnell."
+  },
+  {
+    id:"entscheidung",
+    name:"Lena, 29 – Jobangebot oder bleiben",
+    tag:"Entscheidung",
+    short:"Sicheres Jobangebot im Ausland – oder das vertraute Leben behalten?",
+    brief:"Du bist Lena, 29. Du hast ein attraktives Jobangebot in einer anderen Stadt, müsstest aber Partner, Freunde und Sicherheit zurücklassen. Du drehst dich seit Wochen im Kreis. Du bist emotional, wechselst zwischen Euphorie und Angst, suchst eigentlich nach Erlaubnis statt nach Klarheit."
+  },
+  {
+    id:"selbststaendig",
+    name:"Tom, 47 – Schritt in die Selbstständigkeit",
+    tag:"Beruf",
+    short:"Will gründen, traut sich aber seit Jahren nicht.",
+    brief:"Du bist Tom, 47, angestellt und unzufrieden. Du träumst seit Jahren von der Selbstständigkeit, findest aber immer Gründe, es nicht zu tun. Du bist eloquent darin, dich selbst zu sabotieren, redest viel über Rahmenbedingungen und weichst der Frage nach deiner eigenen Verantwortung erst mal aus."
+  },
+  {
+    id:"balance",
+    name:"Aylin, 38 – Ausgebrannt zwischen allem",
+    tag:"Privat",
+    short:"Job, Kinder, pflegebedürftiger Vater – nichts bleibt für sie selbst.",
+    brief:"Du bist Aylin, 38, berufstätig, zwei Kinder, pflegst nebenbei deinen Vater. Du funktionierst nur noch und hast das Gefühl, dich selbst verloren zu haben. Du spielst dein Leid zuerst herunter ('andere haben es schlimmer') und brauchst behutsame Fragen, um dich zu öffnen."
+  },
+  {
+    id:"konflikt",
+    name:"David, 52 – Dauerkonflikt mit dem Sohn",
+    tag:"Privat",
+    short:"Der erwachsene Sohn bricht den Kontakt ab. David versteht es nicht.",
+    brief:"Du bist David, 52. Dein erwachsener Sohn geht auf Distanz und du weißt nicht warum. Du bist verletzt, neigst dazu, dich als Opfer zu sehen und dem Sohn die Schuld zu geben. Erst durch gute Fragen kommst du dazu, auch deinen eigenen Anteil anzusehen."
+  }
+];
+
+/* =========================================================
+   STATE
+   ========================================================= */
+let selectedPersona = null;
+let history = []; // [{role:'user'|'assistant', content:'...'}]
+let busy = false;
+
+/* =========================================================
+   SETUP-SCREEN
+   ========================================================= */
+const grid = document.getElementById("personaGrid");
+const startBtn = document.getElementById("startBtn");
+
+function buildSetup(){
+  grid.innerHTML = "";
+  PERSONAS.forEach(p=>{
+    const c = document.createElement("div");
+    c.className = "card";
+    c.dataset.id = p.id;
+    c.innerHTML = `<span class="tag">${p.tag}</span><h3>${p.name}</h3><p>${p.short}</p>`;
+    c.addEventListener("click",()=>selectCard(p.id));
+    grid.appendChild(c);
+  });
+  // Zufalls-Karte
+  const r = document.createElement("div");
+  r.className = "card random";
+  r.dataset.id = "__random__";
+  r.innerHTML = `<span class="tag">Überraschung</span><h3>🎲 Zufälliges Anliegen</h3><p>Die KI erfindet einen neuen, plausiblen Klienten mit eigenem Problem.</p>`;
+  r.addEventListener("click",()=>selectCard("__random__"));
+  grid.appendChild(r);
+}
+
+function selectCard(id){
+  selectedPersona = id;
+  document.querySelectorAll(".card").forEach(el=>el.classList.toggle("selected", el.dataset.id===id));
+  startBtn.disabled = false;
+}
+
+/* =========================================================
+   GESPRÄCH STARTEN
+   ========================================================= */
+const setupEl = document.getElementById("setup");
+const chatEl = document.getElementById("chat");
+const messagesEl = document.getElementById("messages");
+const resetBtn = document.getElementById("resetBtn");
+
+startBtn.addEventListener("click", startConversation);
+resetBtn.addEventListener("click", resetAll);
+
+function currentBrief(){
+  if(selectedPersona === "__random__") return null;
+  const p = PERSONAS.find(x=>x.id===selectedPersona);
+  return p ? p.brief : null;
+}
+
+async function startConversation(){
+  history = [];
+  messagesEl.innerHTML = "";
+  setupEl.style.display = "none";
+  chatEl.style.display = "flex";
+  resetBtn.style.display = "inline-block";
+  document.getElementById("hSub").textContent = "Stelle deine Fragen – tippen oder per Mikrofon 🎤";
+
+  // Erste Nachricht: Klient schildert sein Problem.
+  // Wir senden einen internen Trigger an das Backend.
+  await sendToBackend("__START__");
+}
+
+function resetAll(){
+  if(busy) return;
+  selectedPersona = null;
+  history = [];
+  chatEl.style.display = "none";
+  resetBtn.style.display = "none";
+  setupEl.style.display = "block";
+  startBtn.disabled = true;
+  document.querySelectorAll(".card").forEach(el=>el.classList.remove("selected"));
+  document.getElementById("hSub").textContent = "Wähle einen Klienten und beginne das Gespräch.";
+}
+
+/* =========================================================
+   NACHRICHTEN RENDERN
+   ========================================================= */
+function addMessage(role, text){
+  const div = document.createElement("div");
+  div.className = "msg " + (role==="assistant" ? "client" : "coach");
+  const who = document.createElement("span");
+  who.className = "who";
+  who.textContent = role==="assistant" ? "Klient" : "Du (Coach)";
+  div.appendChild(who);
+  div.appendChild(document.createTextNode(text));
+  messagesEl.appendChild(div);
+  scrollDown();
+}
+
+let typingEl = null;
+function showTyping(){
+  typingEl = document.createElement("div");
+  typingEl.className = "typing";
+  typingEl.innerHTML = `Klient denkt nach <span class="dots"><span>.</span><span>.</span><span>.</span></span>`;
+  messagesEl.appendChild(typingEl);
+  scrollDown();
+}
+function hideTyping(){ if(typingEl){typingEl.remove();typingEl=null;} }
+function scrollDown(){ messagesEl.scrollTop = messagesEl.scrollHeight; }
+
+/* =========================================================
+   BACKEND-KOMMUNIKATION
+   ========================================================= */
+const statusline = document.getElementById("statusline");
+
+async function sendToBackend(userText){
+  if(busy) return;
+  busy = true;
+  setInputEnabled(false);
+  statusline.textContent = "";
+
+  // Sichtbare Coach-Nachricht (außer beim internen Start-Trigger)
+  if(userText !== "__START__"){
+    addMessage("user", userText);
+    history.push({role:"user", content:userText});
+  }
+
+  showTyping();
+
+  try{
+    const res = await fetch(API_ENDPOINT, {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({
+        persona: currentBrief(),       // null => Zufallsklient
+        isStart: userText === "__START__",
+        messages: history
+      })
+    });
+
+    if(!res.ok){
+      let msg = "Fehler " + res.status;
+      try{ const e = await res.json(); if(e && e.error) msg = e.error; }catch(_){}
+      throw new Error(msg);
+    }
+
+    const data = await res.json();
+    const reply = (data && data.reply) ? data.reply.trim() : "(keine Antwort erhalten)";
+    hideTyping();
+    addMessage("assistant", reply);
+    history.push({role:"assistant", content:reply});
+  }catch(err){
+    hideTyping();
+    statusline.innerHTML = `<span class="err">⚠️ ${err.message || "Verbindung fehlgeschlagen."}</span>`;
+  }finally{
+    busy = false;
+    setInputEnabled(true);
+    textInput.focus();
+  }
+}
+
+/* =========================================================
+   TEXT-EINGABE
+   ========================================================= */
+const textInput = document.getElementById("textInput");
+const sendBtn = document.getElementById("sendBtn");
+const micBtn = document.getElementById("micBtn");
+
+function setInputEnabled(on){
+  textInput.disabled = !on;
+  sendBtn.disabled = !on;
+  micBtn.disabled = !on;
+}
+
+function send(){
+  const t = textInput.value.trim();
+  if(!t || busy) return;
+  textInput.value = "";
+  autoGrow();
+  sendToBackend(t);
+}
+
+sendBtn.addEventListener("click", send);
+textInput.addEventListener("keydown",(e)=>{
+  if(e.key==="Enter" && !e.shiftKey){ e.preventDefault(); send(); }
+});
+function autoGrow(){
+  textInput.style.height="auto";
+  textInput.style.height=Math.min(textInput.scrollHeight,120)+"px";
+}
+textInput.addEventListener("input", autoGrow);
+
+/* =========================================================
+   MIKROFON / SPRACHEINGABE (Web Speech API)
+   ========================================================= */
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+let recognition = null;
+let recording = false;
+
+if(SpeechRecognition){
+  recognition = new SpeechRecognition();
+  recognition.lang = "de-DE";
+  recognition.interimResults = true;
+  recognition.continuous = false;
+
+  let baseText = "";
+  recognition.addEventListener("result",(e)=>{
+    let interim = "", finalT = "";
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      const r = e.results[i];
+      if(r.isFinal) finalT += r[0].transcript;
+      else interim += r[0].transcript;
+    }
+    if(finalT) baseText = (baseText + " " + finalT).trim();
+    textInput.value = (baseText + " " + interim).trim();
+    autoGrow();
+  });
+  recognition.addEventListener("start",()=>{
+    recording = true; micBtn.classList.add("recording");
+    statusline.textContent = "🎤 Ich höre zu…";
+    baseText = textInput.value.trim();
+  });
+  recognition.addEventListener("end",()=>{
+    recording = false; micBtn.classList.remove("recording");
+    statusline.textContent = "";
+  });
+  recognition.addEventListener("error",(e)=>{
+    recording = false; micBtn.classList.remove("recording");
+    let m = "Spracheingabe nicht möglich.";
+    if(e.error==="not-allowed"||e.error==="service-not-allowed") m="Mikrofon-Zugriff wurde blockiert. Bitte in den Browser-Einstellungen erlauben.";
+    else if(e.error==="no-speech") m="Nichts gehört – bitte erneut versuchen.";
+    statusline.innerHTML = `<span class="err">${m}</span>`;
+  });
+
+  micBtn.addEventListener("click",()=>{
+    if(busy) return;
+    if(recording){ recognition.stop(); }
+    else{ try{ recognition.start(); }catch(_){ /* schon aktiv */ } }
+  });
+}else{
+  // Kein Speech-Support -> Mikro ausblenden
+  micBtn.style.display = "none";
+}
+
+/* =========================================================
+   INIT
+   ========================================================= */
+buildSetup();
+</script>
+</body>
+</html>
