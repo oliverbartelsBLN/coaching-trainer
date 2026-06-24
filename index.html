@@ -9,14 +9,16 @@
     --bg:#0f1419;
     --panel:#1a2129;
     --panel-2:#222c36;
-    --accent:#4f9da6;
-    --accent-2:#6fc3bf;
+    --accent:#ef8a3c;          /* Marken-Orange */
+    --accent-2:#f6a866;
+    --accent-ink:#3a1f06;
     --text:#e8edf2;
     --muted:#9aa7b2;
     --client:#263340;
-    --coach:#2f5d54;
+    --coach:#5a3a1a;
     --danger:#c2554d;
     --border:#2c3743;
+    --gold:#d8b878;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   html,body{height:100%;margin:0;}
@@ -34,16 +36,28 @@
   header .left{flex:1;min-width:0;}
   .btn{
     border:none;border-radius:10px;padding:11px 16px;font-size:15px;font-weight:600;
-    cursor:pointer;background:var(--accent);color:#fff;transition:transform .05s ease,background .15s;
+    cursor:pointer;background:var(--accent);color:#fff;transition:transform .05s ease,background .15s,opacity .15s;
   }
   .btn:active{transform:scale(.97);}
   .btn.ghost{background:var(--panel-2);color:var(--text);border:1px solid var(--border);}
   .btn.small{padding:8px 12px;font-size:13px;}
-  .btn:disabled{opacity:.5;cursor:default;}
+  .btn:disabled{opacity:.45;cursor:default;}
+
+  /* ---------- Logo ---------- */
+  .logo{display:block;margin:0 auto 6px;width:260px;max-width:72%;height:auto;color:var(--text);}
+  .logo-strap{text-align:center;color:var(--muted);font-size:12px;letter-spacing:.5px;margin-bottom:20px;}
 
   /* ---------- Setup screen ---------- */
-  #setup{flex:1;overflow-y:auto;padding:20px 16px 40px;-webkit-overflow-scrolling:touch;}
+  #setup{flex:1;overflow-y:auto;padding:22px 16px 40px;-webkit-overflow-scrolling:touch;}
   #setup .intro{max-width:680px;margin:0 auto 18px;color:var(--muted);font-size:14px;line-height:1.5;}
+  .section-label{max-width:680px;margin:0 auto 8px;font-size:13px;font-weight:600;color:var(--text);}
+  .levels{max-width:680px;margin:0 auto 6px;display:flex;gap:8px;}
+  .levels button{
+    flex:1;border:1px solid var(--border);background:var(--panel);color:var(--text);
+    border-radius:12px;padding:10px 6px;font-size:13px;font-weight:600;cursor:pointer;transition:.15s;
+  }
+  .levels button.active{border-color:var(--accent);background:rgba(239,138,60,.16);color:var(--accent-2);}
+  .level-desc{max-width:680px;margin:0 auto 20px;font-size:12.5px;color:var(--muted);line-height:1.45;min-height:34px;}
   .grid{max-width:680px;margin:0 auto;display:grid;grid-template-columns:1fr;gap:12px;}
   @media(min-width:620px){.grid{grid-template-columns:1fr 1fr;}}
   .card{
@@ -53,31 +67,37 @@
   .card:hover{border-color:var(--accent);}
   .card.selected{border-color:var(--accent);background:var(--panel-2);}
   .card h3{margin:0 0 6px;font-size:15px;}
-  .card .tag{display:inline-block;font-size:11px;color:var(--accent-2);background:rgba(79,157,166,.12);
+  .card .tag{display:inline-block;font-size:11px;color:var(--accent-2);background:rgba(239,138,60,.14);
     padding:2px 8px;border-radius:20px;margin-bottom:8px;}
   .card p{margin:0;font-size:13px;color:var(--muted);line-height:1.45;}
   .card.random{border-style:dashed;text-align:center;}
   .start-bar{max-width:680px;margin:20px auto 0;display:flex;gap:10px;}
   .start-bar .btn{flex:1;}
+  .footnote{max-width:680px;margin:26px auto 0;text-align:center;}
+  .footnote a{color:var(--muted);font-size:12px;text-decoration:underline;cursor:pointer;}
 
   /* ---------- Chat screen ---------- */
   #chat{display:none;flex-direction:column;flex:1;min-height:0;}
-  #messages{flex:1;overflow-y:auto;padding:16px 14px 8px;-webkit-overflow-scrolling:touch;}
+  #messages{flex:1;overflow-y:auto;padding:16px 14px 8px;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;}
   .msg{max-width:84%;margin:0 0 12px;padding:11px 14px;border-radius:16px;font-size:15px;line-height:1.5;
     white-space:pre-wrap;word-wrap:break-word;animation:pop .18s ease;}
   @keyframes pop{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
   .msg.client{background:var(--client);border-bottom-left-radius:5px;align-self:flex-start;margin-right:auto;}
   .msg.coach{background:var(--coach);border-bottom-right-radius:5px;align-self:flex-end;margin-left:auto;}
   .msg .who{font-size:11px;color:var(--muted);margin-bottom:3px;display:block;}
-  #messages{display:flex;flex-direction:column;}
-  .msg.feedback{align-self:stretch;max-width:100%;background:#241f2e;border:1px solid #b08d57;
+  .msg.feedback{align-self:stretch;max-width:100%;background:#241f2e;border:1px solid var(--gold);
     border-radius:14px;margin:6px 0 14px;padding:14px 16px;}
-  .msg.feedback .who{color:#d8b878;font-weight:600;font-size:12px;letter-spacing:.4px;text-transform:uppercase;}
+  .msg.feedback .who{color:var(--gold);font-weight:600;font-size:12px;letter-spacing:.4px;text-transform:uppercase;}
   .typing{align-self:flex-start;color:var(--muted);font-style:italic;font-size:14px;margin-bottom:12px;padding:0 6px;}
   .dots span{animation:blink 1.2s infinite both;}
   .dots span:nth-child(2){animation-delay:.2s;}
   .dots span:nth-child(3){animation-delay:.4s;}
   @keyframes blink{0%,80%,100%{opacity:.2;}40%{opacity:1;}}
+
+  #endbar{padding:8px 12px 0;display:flex;gap:8px;justify-content:center;flex-wrap:wrap;}
+  #endbar .btn{flex:1;min-width:140px;max-width:260px;}
+  #statusline{font-size:12px;color:var(--muted);text-align:center;padding:4px 12px 0;min-height:18px;}
+  .err{color:var(--danger);}
 
   /* ---------- Input bar ---------- */
   #inputbar{flex-shrink:0;border-top:1px solid var(--border);background:var(--panel);
@@ -93,10 +113,36 @@
   .icon-btn.mic.recording{background:var(--danger);border-color:var(--danger);animation:pulse 1.2s infinite;}
   @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(194,85,77,.5);}70%{box-shadow:0 0 0 12px rgba(194,85,77,0);}100%{box-shadow:0 0 0 0 rgba(194,85,77,0);}}
   .icon-btn svg{width:22px;height:22px;}
-  #endbar{padding:8px 12px 0;text-align:center;}
-  #endBtn{width:100%;max-width:420px;}
-  #statusline{font-size:12px;color:var(--muted);text-align:center;padding:4px 12px 0;min-height:18px;}
-  .err{color:var(--danger);}
+
+  /* ---------- Disclaimer overlay ---------- */
+  #overlay{position:fixed;inset:0;background:rgba(8,11,15,.82);backdrop-filter:blur(3px);
+    display:none;align-items:center;justify-content:center;padding:18px;z-index:50;}
+  #overlay.show{display:flex;}
+  .modal{background:var(--panel);border:1px solid var(--border);border-radius:16px;max-width:520px;width:100%;
+    padding:22px;max-height:88dvh;overflow-y:auto;}
+  .modal h2{margin:0 0 12px;font-size:18px;}
+  .modal p{font-size:13.5px;line-height:1.55;color:var(--text);margin:0 0 12px;}
+  .modal p.muted{color:var(--muted);font-size:12.5px;}
+  .modal .btn{width:100%;margin-top:6px;}
+
+  /* ---------- Druck / PDF ---------- */
+  #printArea{display:none;}
+  @media print{
+    @page{margin:18mm 16mm;}
+    html,body{height:auto;overflow:visible;background:#fff;}
+    body > *:not(#printArea){display:none !important;}
+    #printArea{display:block !important;color:#1a1a1a;font-size:12pt;line-height:1.5;}
+    #printArea .p-logo{width:230px;color:#1a1a1a;margin:0 0 4px;}
+    #printArea .p-meta{color:#555;font-size:10pt;margin:0 0 18px;border-bottom:1px solid #ccc;padding-bottom:10px;}
+    #printArea h1{font-size:16pt;margin:14px 0 4px;}
+    #printArea .turn{margin:0 0 11px;page-break-inside:avoid;}
+    #printArea .turn .role{font-weight:700;font-size:10.5pt;}
+    #printArea .turn.coach .role{color:#b5621c;}
+    #printArea .turn .text{white-space:pre-wrap;}
+    #printArea .fb{margin-top:16px;border:1px solid #caa84e;border-radius:8px;padding:12px 14px;white-space:pre-wrap;page-break-inside:avoid;}
+    #printArea .fb h2{margin:0 0 8px;font-size:13pt;color:#9a7d1f;}
+    #printArea .p-foot{margin-top:18px;color:#777;font-size:9pt;border-top:1px solid #ccc;padding-top:8px;}
+  }
 </style>
 </head>
 <body>
@@ -111,14 +157,32 @@
 
 <!-- SETUP -->
 <section id="setup">
+  <div id="logoSlot"></div>
+  <div class="logo-strap">Coaching-Trainer · Übungswerkzeug für angehende Coaches</div>
+
   <div class="intro">
-    Dieser virtuelle Klient schildert dir ein Anliegen und reagiert auf deine Fragen wie ein echter Coachee.
+    Der virtuelle Klient schildert dir ein Anliegen und reagiert auf deine Fragen wie ein echter Coachee.
     Übe ein vollständiges Gespräch – von der Problemschilderung über Ziel, Auftrag und Lösungsbild bis zu konkreten Maßnahmen.
     Tippe deine Fragen oder nutze das Mikrofon 🎤.
   </div>
+
+  <div class="section-label">1 · Schwierigkeitsgrad</div>
+  <div class="levels" id="levels">
+    <button data-level="einsteiger">Einsteiger</button>
+    <button data-level="geuebt" class="active">Geübt</button>
+    <button data-level="anspruchsvoll">Anspruchsvoll</button>
+  </div>
+  <div class="level-desc" id="levelDesc"></div>
+
+  <div class="section-label">2 · Klient wählen</div>
   <div class="grid" id="personaGrid"></div>
+
   <div class="start-bar">
     <button class="btn" id="startBtn" disabled>Gespräch starten</button>
+  </div>
+
+  <div class="footnote">
+    <a id="footHints">Hinweise &amp; Datenschutz</a>
   </div>
 </section>
 
@@ -126,7 +190,8 @@
 <section id="chat">
   <div id="messages"></div>
   <div id="endbar">
-    <button class="btn ghost small" id="endBtn" disabled>🎓 Gespräch beenden &amp; Feedback</button>
+    <button class="btn ghost small" id="endBtn" disabled>🎓 Beenden &amp; Feedback</button>
+    <button class="btn ghost small" id="pdfBtn" disabled>📄 Protokoll (PDF)</button>
   </div>
   <div id="statusline"></div>
   <div id="inputbar">
@@ -144,70 +209,102 @@
   </div>
 </section>
 
+<!-- DISCLAIMER OVERLAY -->
+<div id="overlay">
+  <div class="modal">
+    <h2>Bevor du startest</h2>
+    <p><strong>Dies ist ein Übungswerkzeug mit einem fiktiven, KI-gesteuerten Klienten.</strong> Die Gespräche sind frei erfunden und können eine echte Coaching-Situation nicht ersetzen.</p>
+    <p>Die KI kann Fehler machen oder unrealistisch reagieren. Im Zweifel beginnst du das Gespräch einfach neu. Hab keine Angst vor Fehlern – alles ist Fiktion und dient allein dem Üben.</p>
+    <p class="muted"><strong>Datenschutz:</strong> Diese App speichert deine Eingaben nicht; beim Neuladen ist alles gelöscht. Zur Erzeugung der Antworten werden deine Eingaben jedoch an den KI-Dienst (Anthropic) übertragen und dort verarbeitet. Gib deshalb <strong>keine echten personenbezogenen Daten realer Personen</strong> ein.</p>
+    <button class="btn" id="ackBtn">Verstanden</button>
+  </div>
+</div>
+
+<!-- DRUCKBEREICH (nur beim PDF/Druck sichtbar) -->
+<div id="printArea"></div>
+
 <script>
 /* =========================================================
    KONFIGURATION
    ========================================================= */
-// Endpunkt des Backend-Proxys. Bei Vercel bleibt das so.
 const API_ENDPOINT = "/api/chat";
+const ACK_KEY = "coaching_trainer_ack_v1";
 
 /* =========================================================
-   PERSONAS (feste Beispiele)
+   LOGO (Vektor – passt sich Farbe an via currentColor)
+   ========================================================= */
+function logoSVG(){
+  return `<svg class="logo" viewBox="0 0 480 152" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Oliver Bartels – Systemische Organisationsberatung">
+    <g fill="currentColor" font-family="Arial, Helvetica, sans-serif" font-size="21" letter-spacing="1.4" text-anchor="end">
+      <text x="404" y="34">OLIVER BARTELS</text>
+      <text x="404" y="80">SYSTEMISCHE</text>
+      <text x="404" y="126">ORGANISATIONSBERATUNG</text>
+    </g>
+    <g fill="#ef8a3c">
+      <rect x="420" y="12" width="34" height="30" rx="8"/>
+      <rect x="420" y="58" width="34" height="30" rx="8"/>
+      <rect x="420" y="104" width="34" height="30" rx="8"/>
+    </g>
+  </svg>`;
+}
+document.getElementById("logoSlot").innerHTML = logoSVG();
+
+/* =========================================================
+   STUFEN
+   ========================================================= */
+const LEVELS = {
+  einsteiger: { label:"Einsteiger", desc:"Kooperativer Klient: öffnet sich leicht, geht gut mit der Phasenstruktur mit, wenig Widerstand. Ideal für die ersten Übungsgespräche." },
+  geuebt:     { label:"Geübt",      desc:"Realistisch ambivalent: öffnet sich bei guten Fragen, bleibt bei schwachen Fragen vage. Gute Mischung aus machbar und fordernd." },
+  anspruchsvoll:{ label:"Anspruchsvoll", desc:"Echter Widerstand: Ambivalenz, Abwehr, Themenwechsel. Tiefe nur bei wirklich präzisen Fragen. Für geübte Coaches." }
+};
+let selectedLevel = "geuebt";
+
+const levelsEl = document.getElementById("levels");
+const levelDescEl = document.getElementById("levelDesc");
+function renderLevelDesc(){ levelDescEl.textContent = LEVELS[selectedLevel].desc; }
+levelsEl.querySelectorAll("button").forEach(b=>{
+  b.addEventListener("click",()=>{
+    selectedLevel = b.dataset.level;
+    levelsEl.querySelectorAll("button").forEach(x=>x.classList.toggle("active", x===b));
+    renderLevelDesc();
+  });
+});
+renderLevelDesc();
+
+/* =========================================================
+   PERSONAS
    ========================================================= */
 const PERSONAS = [
-  {
-    id:"berufung",
-    name:"Sandra, 41 – Sinnkrise im Job",
-    tag:"Beruf",
+  { id:"berufung", name:"Sandra, 41 – Sinnkrise im Job", tag:"Beruf",
     short:"Erfolgreich, aber innerlich leer. Fragt sich, ob das alles war.",
-    brief:"Du bist Sandra, 41, Abteilungsleiterin in einem Konzern. Nach außen erfolgreich, aber seit Monaten fühlst du dich leer und fragst dich, ob dein Job noch zu dir passt. Du hast Angst, etwas wegzuwerfen, das du aufgebaut hast. Du bist nachdenklich, ein bisschen müde, sprichst nicht sofort über die tieferen Gefühle."
-  },
-  {
-    id:"fuehrung",
-    name:"Markus, 36 – Schwierige Mitarbeiterin",
-    tag:"Führung",
+    brief:"Du bist Sandra, 41, Abteilungsleiterin in einem Konzern. Nach außen erfolgreich, aber seit Monaten fühlst du dich leer und fragst dich, ob dein Job noch zu dir passt. Du hast Angst, etwas wegzuwerfen, das du aufgebaut hast. Du bist nachdenklich, ein bisschen müde, sprichst nicht sofort über die tieferen Gefühle." },
+  { id:"fuehrung", name:"Markus, 36 – Schwierige Mitarbeiterin", tag:"Führung",
     short:"Neue Führungskraft, ein Teammitglied blockiert und untergräbt ihn.",
-    brief:"Du bist Markus, 36, seit einem halben Jahr Teamleiter. Eine erfahrene Mitarbeiterin stellt dich ständig in Frage und du weißt nicht, wie du auftreten sollst, ohne autoritär oder schwach zu wirken. Du bist angespannt, lösungsorientiert, manchmal etwas defensiv und rechtfertigst dich schnell."
-  },
-  {
-    id:"entscheidung",
-    name:"Lena, 29 – Jobangebot oder bleiben",
-    tag:"Entscheidung",
+    brief:"Du bist Markus, 36, seit einem halben Jahr Teamleiter. Eine erfahrene Mitarbeiterin stellt dich ständig in Frage und du weißt nicht, wie du auftreten sollst, ohne autoritär oder schwach zu wirken. Du bist angespannt, lösungsorientiert, manchmal etwas defensiv und rechtfertigst dich schnell." },
+  { id:"entscheidung", name:"Lena, 29 – Jobangebot oder bleiben", tag:"Entscheidung",
     short:"Sicheres Jobangebot im Ausland – oder das vertraute Leben behalten?",
-    brief:"Du bist Lena, 29. Du hast ein attraktives Jobangebot in einer anderen Stadt, müsstest aber Partner, Freunde und Sicherheit zurücklassen. Du drehst dich seit Wochen im Kreis. Du bist emotional, wechselst zwischen Euphorie und Angst, suchst eigentlich nach Erlaubnis statt nach Klarheit."
-  },
-  {
-    id:"selbststaendig",
-    name:"Tom, 47 – Schritt in die Selbstständigkeit",
-    tag:"Beruf",
+    brief:"Du bist Lena, 29. Du hast ein attraktives Jobangebot in einer anderen Stadt, müsstest aber Partner, Freunde und Sicherheit zurücklassen. Du drehst dich seit Wochen im Kreis. Du bist emotional, wechselst zwischen Euphorie und Angst, suchst eigentlich nach Erlaubnis statt nach Klarheit." },
+  { id:"selbststaendig", name:"Tom, 47 – Schritt in die Selbstständigkeit", tag:"Beruf",
     short:"Will gründen, traut sich aber seit Jahren nicht.",
-    brief:"Du bist Tom, 47, angestellt und unzufrieden. Du träumst seit Jahren von der Selbstständigkeit, findest aber immer Gründe, es nicht zu tun. Du bist eloquent darin, dich selbst zu sabotieren, redest viel über Rahmenbedingungen und weichst der Frage nach deiner eigenen Verantwortung erst mal aus."
-  },
-  {
-    id:"balance",
-    name:"Aylin, 38 – Ausgebrannt zwischen allem",
-    tag:"Privat",
+    brief:"Du bist Tom, 47, angestellt und unzufrieden. Du träumst seit Jahren von der Selbstständigkeit, findest aber immer Gründe, es nicht zu tun. Du bist eloquent darin, dich selbst zu sabotieren, redest viel über Rahmenbedingungen und weichst der Frage nach deiner eigenen Verantwortung erst mal aus." },
+  { id:"balance", name:"Aylin, 38 – Ausgebrannt zwischen allem", tag:"Privat",
     short:"Job, Kinder, pflegebedürftiger Vater – nichts bleibt für sie selbst.",
-    brief:"Du bist Aylin, 38, berufstätig, zwei Kinder, pflegst nebenbei deinen Vater. Du funktionierst nur noch und hast das Gefühl, dich selbst verloren zu haben. Du spielst dein Leid zuerst herunter ('andere haben es schlimmer') und brauchst behutsame Fragen, um dich zu öffnen."
-  },
-  {
-    id:"konflikt",
-    name:"David, 52 – Dauerkonflikt mit dem Sohn",
-    tag:"Privat",
+    brief:"Du bist Aylin, 38, berufstätig, zwei Kinder, pflegst nebenbei deinen Vater. Du funktionierst nur noch und hast das Gefühl, dich selbst verloren zu haben. Du spielst dein Leid zuerst herunter ('andere haben es schlimmer') und brauchst behutsame Fragen, um dich zu öffnen." },
+  { id:"konflikt", name:"David, 52 – Dauerkonflikt mit dem Sohn", tag:"Privat",
     short:"Der erwachsene Sohn bricht den Kontakt ab. David versteht es nicht.",
-    brief:"Du bist David, 52. Dein erwachsener Sohn geht auf Distanz und du weißt nicht warum. Du bist verletzt, neigst dazu, dich als Opfer zu sehen und dem Sohn die Schuld zu geben. Erst durch gute Fragen kommst du dazu, auch deinen eigenen Anteil anzusehen."
-  }
+    brief:"Du bist David, 52. Dein erwachsener Sohn geht auf Distanz und du weißt nicht warum. Du bist verletzt, neigst dazu, dich als Opfer zu sehen und dem Sohn die Schuld zu geben. Erst durch gute Fragen kommst du dazu, auch deinen eigenen Anteil anzusehen." }
 ];
 
 /* =========================================================
    STATE
    ========================================================= */
 let selectedPersona = null;
-let history = []; // [{role:'user'|'assistant', content:'...'}]
+let history = [];
 let busy = false;
+let lastFeedback = null;
 
 /* =========================================================
-   SETUP-SCREEN
+   SETUP
    ========================================================= */
 const grid = document.getElementById("personaGrid");
 const startBtn = document.getElementById("startBtn");
@@ -216,21 +313,17 @@ function buildSetup(){
   grid.innerHTML = "";
   PERSONAS.forEach(p=>{
     const c = document.createElement("div");
-    c.className = "card";
-    c.dataset.id = p.id;
+    c.className = "card"; c.dataset.id = p.id;
     c.innerHTML = `<span class="tag">${p.tag}</span><h3>${p.name}</h3><p>${p.short}</p>`;
     c.addEventListener("click",()=>selectCard(p.id));
     grid.appendChild(c);
   });
-  // Zufalls-Karte
   const r = document.createElement("div");
-  r.className = "card random";
-  r.dataset.id = "__random__";
+  r.className = "card random"; r.dataset.id = "__random__";
   r.innerHTML = `<span class="tag">Überraschung</span><h3>🎲 Zufälliges Anliegen</h3><p>Die KI erfindet einen neuen, plausiblen Klienten mit eigenem Problem.</p>`;
   r.addEventListener("click",()=>selectCard("__random__"));
   grid.appendChild(r);
 }
-
 function selectCard(id){
   selectedPersona = id;
   document.querySelectorAll(".card").forEach(el=>el.classList.toggle("selected", el.dataset.id===id));
@@ -238,7 +331,7 @@ function selectCard(id){
 }
 
 /* =========================================================
-   GESPRÄCH STARTEN
+   GESPRÄCH
    ========================================================= */
 const setupEl = document.getElementById("setup");
 const chatEl = document.getElementById("chat");
@@ -248,42 +341,45 @@ const resetBtn = document.getElementById("resetBtn");
 startBtn.addEventListener("click", startConversation);
 resetBtn.addEventListener("click", resetAll);
 
+function currentPersonaObj(){ return PERSONAS.find(x=>x.id===selectedPersona) || null; }
 function currentBrief(){
   if(selectedPersona === "__random__") return null;
-  const p = PERSONAS.find(x=>x.id===selectedPersona);
+  const p = currentPersonaObj();
   return p ? p.brief : null;
+}
+function currentPersonaName(){
+  if(selectedPersona === "__random__") return "Zufälliger Klient";
+  const p = currentPersonaObj();
+  return p ? p.name : "—";
 }
 
 async function startConversation(){
-  history = [];
+  history = []; lastFeedback = null;
   messagesEl.innerHTML = "";
   setupEl.style.display = "none";
   chatEl.style.display = "flex";
   resetBtn.style.display = "inline-block";
-  document.getElementById("hSub").textContent = "Stelle deine Fragen – tippen oder per Mikrofon 🎤";
-
-  // Erste Nachricht: Klient schildert sein Problem.
-  // Wir senden einen internen Trigger an das Backend.
+  document.getElementById("hSub").textContent =
+    "Stufe: " + LEVELS[selectedLevel].label + " · " + currentPersonaName();
   await sendToBackend("__START__");
 }
 
 function resetAll(){
   if(busy) return;
-  selectedPersona = null;
-  history = [];
+  selectedPersona = null; history = []; lastFeedback = null;
   chatEl.style.display = "none";
   resetBtn.style.display = "none";
   setupEl.style.display = "block";
   startBtn.disabled = true;
+  endBtn.disabled = true; pdfBtn.disabled = true;
   document.querySelectorAll(".card").forEach(el=>el.classList.remove("selected"));
   document.getElementById("hSub").textContent = "Wähle einen Klienten und beginne das Gespräch.";
 }
 
 /* =========================================================
-   NACHRICHTEN RENDERN
+   RENDER
    ========================================================= */
 function addMessage(type, text){
-  // type: "assistant" (Klient), "user" (Coach) oder "feedback" (Beobachter)
   const div = document.createElement("div");
   let cls, label;
   if(type==="feedback"){ cls="feedback"; label="🎓 Neutraler Beobachter – Feedback"; }
@@ -291,14 +387,12 @@ function addMessage(type, text){
   else { cls="coach"; label="Du (Coach)"; }
   div.className = "msg " + cls;
   const who = document.createElement("span");
-  who.className = "who";
-  who.textContent = label;
+  who.className = "who"; who.textContent = label;
   div.appendChild(who);
   div.appendChild(document.createTextNode(text));
   messagesEl.appendChild(div);
   scrollDown();
 }
-
 let typingEl = null;
 function showTyping(label){
   typingEl = document.createElement("div");
@@ -311,189 +405,190 @@ function hideTyping(){ if(typingEl){typingEl.remove();typingEl=null;} }
 function scrollDown(){ messagesEl.scrollTop = messagesEl.scrollHeight; }
 
 /* =========================================================
-   BACKEND-KOMMUNIKATION
+   BACKEND – KLIENT
    ========================================================= */
 const statusline = document.getElementById("statusline");
 
 async function sendToBackend(userText){
   if(busy) return;
-  busy = true;
-  setInputEnabled(false);
-  statusline.textContent = "";
-
-  // Sichtbare Coach-Nachricht (außer beim internen Start-Trigger)
+  busy = true; setInputEnabled(false); statusline.textContent = "";
   if(userText !== "__START__"){
     addMessage("user", userText);
     history.push({role:"user", content:userText});
   }
-
   showTyping();
-
   try{
     const res = await fetch(API_ENDPOINT, {
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
+      method:"POST", headers:{"Content-Type":"application/json"},
       body: JSON.stringify({
-        persona: currentBrief(),       // null => Zufallsklient
+        persona: currentBrief(),
+        level: selectedLevel,
         isStart: userText === "__START__",
         messages: history
       })
     });
-
     if(!res.ok){
       let msg = "Fehler " + res.status;
       try{ const e = await res.json(); if(e && e.error) msg = e.error; }catch(_){}
       throw new Error(msg);
     }
-
     const data = await res.json();
     const reply = (data && data.reply) ? data.reply.trim() : "(keine Antwort erhalten)";
-    hideTyping();
-    addMessage("assistant", reply);
+    hideTyping(); addMessage("assistant", reply);
     history.push({role:"assistant", content:reply});
   }catch(err){
     hideTyping();
     statusline.innerHTML = `<span class="err">⚠️ ${err.message || "Verbindung fehlgeschlagen."}</span>`;
   }finally{
-    busy = false;
-    setInputEnabled(true);
-    textInput.focus();
+    busy = false; setInputEnabled(true); textInput.focus();
   }
 }
 
 /* =========================================================
-   TEXT-EINGABE
+   EINGABE
    ========================================================= */
 const textInput = document.getElementById("textInput");
 const sendBtn = document.getElementById("sendBtn");
 const micBtn = document.getElementById("micBtn");
 const endBtn = document.getElementById("endBtn");
+const pdfBtn = document.getElementById("pdfBtn");
 
-function hasCoachTurn(){
-  return history.some(m => m.role === "user");
-}
-function updateEndBtn(){
-  // Feedback erst möglich, wenn der Coach mindestens eine Frage gestellt hat.
+function hasCoachTurn(){ return history.some(m => m.role === "user"); }
+function hasConversation(){ return history.length > 0; }
+function updateActionBtns(){
   endBtn.disabled = busy || !hasCoachTurn();
+  pdfBtn.disabled = busy || !hasConversation();
 }
 function setInputEnabled(on){
-  textInput.disabled = !on;
-  sendBtn.disabled = !on;
-  micBtn.disabled = !on;
-  if(on) updateEndBtn(); else endBtn.disabled = true;
+  textInput.disabled = !on; sendBtn.disabled = !on; micBtn.disabled = !on;
+  if(on) updateActionBtns(); else { endBtn.disabled = true; pdfBtn.disabled = true; }
 }
-
 function send(){
   const t = textInput.value.trim();
   if(!t || busy) return;
-  textInput.value = "";
-  autoGrow();
+  textInput.value = ""; autoGrow();
   sendToBackend(t);
 }
-
 sendBtn.addEventListener("click", send);
-textInput.addEventListener("keydown",(e)=>{
-  if(e.key==="Enter" && !e.shiftKey){ e.preventDefault(); send(); }
-});
-function autoGrow(){
-  textInput.style.height="auto";
-  textInput.style.height=Math.min(textInput.scrollHeight,120)+"px";
-}
+textInput.addEventListener("keydown",(e)=>{ if(e.key==="Enter" && !e.shiftKey){ e.preventDefault(); send(); }});
+function autoGrow(){ textInput.style.height="auto"; textInput.style.height=Math.min(textInput.scrollHeight,120)+"px"; }
 textInput.addEventListener("input", autoGrow);
 
 /* =========================================================
-   FEEDBACK / NEUTRALER BEOBACHTER
+   FEEDBACK
    ========================================================= */
 endBtn.addEventListener("click", requestFeedback);
-
 async function requestFeedback(){
   if(busy || !hasCoachTurn()) return;
-  busy = true;
-  setInputEnabled(false);
-  statusline.textContent = "";
+  busy = true; setInputEnabled(false); statusline.textContent = "";
   showTyping("Beobachter wertet das Gespräch aus");
-
   try{
     const res = await fetch(API_ENDPOINT, {
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body: JSON.stringify({
-        mode:"feedback",
-        persona: currentBrief(),
-        messages: history
-      })
+      method:"POST", headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ mode:"feedback", persona: currentBrief(), level: selectedLevel, messages: history })
     });
-
     if(!res.ok){
       let msg = "Fehler " + res.status;
       try{ const e = await res.json(); if(e && e.error) msg = e.error; }catch(_){}
       throw new Error(msg);
     }
-
     const data = await res.json();
     const fb = (data && data.feedback) ? data.feedback.trim() : "(kein Feedback erhalten)";
-    hideTyping();
-    addMessage("feedback", fb);
+    lastFeedback = fb;
+    hideTyping(); addMessage("feedback", fb);
   }catch(err){
     hideTyping();
     statusline.innerHTML = `<span class="err">⚠️ ${err.message || "Feedback konnte nicht geladen werden."}</span>`;
   }finally{
-    busy = false;
-    setInputEnabled(true);
+    busy = false; setInputEnabled(true);
   }
 }
 
 /* =========================================================
-   MIKROFON / SPRACHEINGABE (Web Speech API)
+   PDF-PROTOKOLL (über Browser-Druck)
+   ========================================================= */
+pdfBtn.addEventListener("click", exportPDF);
+function esc(s){ return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+function exportPDF(){
+  if(busy || !hasConversation()) return;
+  const now = new Date();
+  const datum = now.toLocaleDateString("de-DE",{day:"2-digit",month:"long",year:"numeric"}) +
+                ", " + now.toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"});
+
+  let turns = "";
+  history.forEach(m=>{
+    const isCoach = m.role === "user";
+    turns += `<div class="turn ${isCoach?"coach":"client"}">
+      <div class="role">${isCoach?"Coach":"Klient"}:</div>
+      <div class="text">${esc(m.content)}</div></div>`;
+  });
+
+  const fbBlock = lastFeedback
+    ? `<div class="fb"><h2>Feedback – Neutraler Beobachter</h2>${esc(lastFeedback)}</div>`
+    : "";
+
+  document.getElementById("printArea").innerHTML = `
+    ${logoSVG().replace('class="logo"','class="p-logo"')}
+    <div class="p-meta">Coaching-Übungsprotokoll &nbsp;·&nbsp; ${datum}<br>
+      Klient: ${esc(currentPersonaName())} &nbsp;·&nbsp; Schwierigkeitsgrad: ${esc(LEVELS[selectedLevel].label)}</div>
+    <h1>Gesprächsverlauf</h1>
+    ${turns}
+    ${fbBlock}
+    <div class="p-foot">Erstellt mit dem Coaching-Trainer (Übungswerkzeug). Fiktives, KI-generiertes Gespräch – ersetzt keine reale Coaching-Situation.</div>
+  `;
+  window.print();
+}
+
+/* =========================================================
+   MIKROFON
    ========================================================= */
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-let recognition = null;
-let recording = false;
-
+let recognition = null, recording = false;
 if(SpeechRecognition){
   recognition = new SpeechRecognition();
-  recognition.lang = "de-DE";
-  recognition.interimResults = true;
-  recognition.continuous = false;
-
+  recognition.lang = "de-DE"; recognition.interimResults = true; recognition.continuous = false;
   let baseText = "";
   recognition.addEventListener("result",(e)=>{
     let interim = "", finalT = "";
     for(let i=e.resultIndex;i<e.results.length;i++){
       const r = e.results[i];
-      if(r.isFinal) finalT += r[0].transcript;
-      else interim += r[0].transcript;
+      if(r.isFinal) finalT += r[0].transcript; else interim += r[0].transcript;
     }
     if(finalT) baseText = (baseText + " " + finalT).trim();
-    textInput.value = (baseText + " " + interim).trim();
-    autoGrow();
+    textInput.value = (baseText + " " + interim).trim(); autoGrow();
   });
-  recognition.addEventListener("start",()=>{
-    recording = true; micBtn.classList.add("recording");
-    statusline.textContent = "🎤 Ich höre zu…";
-    baseText = textInput.value.trim();
-  });
-  recognition.addEventListener("end",()=>{
-    recording = false; micBtn.classList.remove("recording");
-    statusline.textContent = "";
-  });
+  recognition.addEventListener("start",()=>{ recording=true; micBtn.classList.add("recording"); statusline.textContent="🎤 Ich höre zu…"; baseText=textInput.value.trim(); });
+  recognition.addEventListener("end",()=>{ recording=false; micBtn.classList.remove("recording"); statusline.textContent=""; });
   recognition.addEventListener("error",(e)=>{
-    recording = false; micBtn.classList.remove("recording");
+    recording=false; micBtn.classList.remove("recording");
     let m = "Spracheingabe nicht möglich.";
     if(e.error==="not-allowed"||e.error==="service-not-allowed") m="Mikrofon-Zugriff wurde blockiert. Bitte in den Browser-Einstellungen erlauben.";
     else if(e.error==="no-speech") m="Nichts gehört – bitte erneut versuchen.";
     statusline.innerHTML = `<span class="err">${m}</span>`;
   });
-
   micBtn.addEventListener("click",()=>{
     if(busy) return;
-    if(recording){ recognition.stop(); }
-    else{ try{ recognition.start(); }catch(_){ /* schon aktiv */ } }
+    if(recording){ recognition.stop(); } else { try{ recognition.start(); }catch(_){} }
   });
-}else{
-  // Kein Speech-Support -> Mikro ausblenden
-  micBtn.style.display = "none";
-}
+}else{ micBtn.style.display = "none"; }
+
+/* =========================================================
+   DISCLAIMER
+   ========================================================= */
+const overlay = document.getElementById("overlay");
+const ackBtn = document.getElementById("ackBtn");
+function showOverlay(){ overlay.classList.add("show"); }
+function hideOverlay(){ overlay.classList.remove("show"); }
+ackBtn.addEventListener("click",()=>{
+  try{ localStorage.setItem(ACK_KEY,"1"); }catch(_){}
+  hideOverlay();
+});
+document.getElementById("footHints").addEventListener("click", showOverlay);
+(function initDisclaimer(){
+  let ack = false;
+  try{ ack = localStorage.getItem(ACK_KEY) === "1"; }catch(_){}
+  if(!ack) showOverlay();
+})();
 
 /* =========================================================
    INIT
