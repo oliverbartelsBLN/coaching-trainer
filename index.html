@@ -70,6 +70,9 @@
   .msg.coach{background:var(--coach);border-bottom-right-radius:5px;align-self:flex-end;margin-left:auto;}
   .msg .who{font-size:11px;color:var(--muted);margin-bottom:3px;display:block;}
   #messages{display:flex;flex-direction:column;}
+  .msg.feedback{align-self:stretch;max-width:100%;background:#241f2e;border:1px solid #b08d57;
+    border-radius:14px;margin:6px 0 14px;padding:14px 16px;}
+  .msg.feedback .who{color:#d8b878;font-weight:600;font-size:12px;letter-spacing:.4px;text-transform:uppercase;}
   .typing{align-self:flex-start;color:var(--muted);font-style:italic;font-size:14px;margin-bottom:12px;padding:0 6px;}
   .dots span{animation:blink 1.2s infinite both;}
   .dots span:nth-child(2){animation-delay:.2s;}
@@ -90,6 +93,8 @@
   .icon-btn.mic.recording{background:var(--danger);border-color:var(--danger);animation:pulse 1.2s infinite;}
   @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(194,85,77,.5);}70%{box-shadow:0 0 0 12px rgba(194,85,77,0);}100%{box-shadow:0 0 0 0 rgba(194,85,77,0);}}
   .icon-btn svg{width:22px;height:22px;}
+  #endbar{padding:8px 12px 0;text-align:center;}
+  #endBtn{width:100%;max-width:420px;}
   #statusline{font-size:12px;color:var(--muted);text-align:center;padding:4px 12px 0;min-height:18px;}
   .err{color:var(--danger);}
 </style>
@@ -120,6 +125,9 @@
 <!-- CHAT -->
 <section id="chat">
   <div id="messages"></div>
+  <div id="endbar">
+    <button class="btn ghost small" id="endBtn" disabled>🎓 Gespräch beenden &amp; Feedback</button>
+  </div>
   <div id="statusline"></div>
   <div id="inputbar">
     <button class="icon-btn mic" id="micBtn" title="Spracheingabe" aria-label="Spracheingabe">
@@ -274,12 +282,17 @@ function resetAll(){
 /* =========================================================
    NACHRICHTEN RENDERN
    ========================================================= */
-function addMessage(role, text){
+function addMessage(type, text){
+  // type: "assistant" (Klient), "user" (Coach) oder "feedback" (Beobachter)
   const div = document.createElement("div");
-  div.className = "msg " + (role==="assistant" ? "client" : "coach");
+  let cls, label;
+  if(type==="feedback"){ cls="feedback"; label="🎓 Neutraler Beobachter – Feedback"; }
+  else if(type==="assistant"){ cls="client"; label="Klient"; }
+  else { cls="coach"; label="Du (Coach)"; }
+  div.className = "msg " + cls;
   const who = document.createElement("span");
   who.className = "who";
-  who.textContent = role==="assistant" ? "Klient" : "Du (Coach)";
+  who.textContent = label;
   div.appendChild(who);
   div.appendChild(document.createTextNode(text));
   messagesEl.appendChild(div);
@@ -287,10 +300,10 @@ function addMessage(role, text){
 }
 
 let typingEl = null;
-function showTyping(){
+function showTyping(label){
   typingEl = document.createElement("div");
   typingEl.className = "typing";
-  typingEl.innerHTML = `Klient denkt nach <span class="dots"><span>.</span><span>.</span><span>.</span></span>`;
+  typingEl.innerHTML = `${label || "Klient denkt nach"} <span class="dots"><span>.</span><span>.</span><span>.</span></span>`;
   messagesEl.appendChild(typingEl);
   scrollDown();
 }
@@ -354,11 +367,20 @@ async function sendToBackend(userText){
 const textInput = document.getElementById("textInput");
 const sendBtn = document.getElementById("sendBtn");
 const micBtn = document.getElementById("micBtn");
+const endBtn = document.getElementById("endBtn");
 
+function hasCoachTurn(){
+  return history.some(m => m.role === "user");
+}
+function updateEndBtn(){
+  // Feedback erst möglich, wenn der Coach mindestens eine Frage gestellt hat.
+  endBtn.disabled = busy || !hasCoachTurn();
+}
 function setInputEnabled(on){
   textInput.disabled = !on;
   sendBtn.disabled = !on;
   micBtn.disabled = !on;
+  if(on) updateEndBtn(); else endBtn.disabled = true;
 }
 
 function send(){
@@ -378,6 +400,48 @@ function autoGrow(){
   textInput.style.height=Math.min(textInput.scrollHeight,120)+"px";
 }
 textInput.addEventListener("input", autoGrow);
+
+/* =========================================================
+   FEEDBACK / NEUTRALER BEOBACHTER
+   ========================================================= */
+endBtn.addEventListener("click", requestFeedback);
+
+async function requestFeedback(){
+  if(busy || !hasCoachTurn()) return;
+  busy = true;
+  setInputEnabled(false);
+  statusline.textContent = "";
+  showTyping("Beobachter wertet das Gespräch aus");
+
+  try{
+    const res = await fetch(API_ENDPOINT, {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({
+        mode:"feedback",
+        persona: currentBrief(),
+        messages: history
+      })
+    });
+
+    if(!res.ok){
+      let msg = "Fehler " + res.status;
+      try{ const e = await res.json(); if(e && e.error) msg = e.error; }catch(_){}
+      throw new Error(msg);
+    }
+
+    const data = await res.json();
+    const fb = (data && data.feedback) ? data.feedback.trim() : "(kein Feedback erhalten)";
+    hideTyping();
+    addMessage("feedback", fb);
+  }catch(err){
+    hideTyping();
+    statusline.innerHTML = `<span class="err">⚠️ ${err.message || "Feedback konnte nicht geladen werden."}</span>`;
+  }finally{
+    busy = false;
+    setInputEnabled(true);
+  }
+}
 
 /* =========================================================
    MIKROFON / SPRACHEINGABE (Web Speech API)
