@@ -51,9 +51,9 @@
   #setup{flex:1;overflow-y:auto;padding:22px 16px 40px;-webkit-overflow-scrolling:touch;}
   #setup .intro{max-width:680px;margin:0 auto 18px;color:var(--muted);font-size:14px;line-height:1.5;}
   .section-label{max-width:680px;margin:0 auto 8px;font-size:13px;font-weight:600;color:var(--text);}
-  .levels{max-width:680px;margin:0 auto 6px;display:flex;gap:8px;}
+  .levels{max-width:680px;margin:0 auto 6px;display:flex;gap:8px;flex-wrap:wrap;}
   .levels button{
-    flex:1;border:1px solid var(--border);background:var(--panel);color:var(--text);
+    flex:1 1 110px;border:1px solid var(--border);background:var(--panel);color:var(--text);
     border-radius:12px;padding:10px 6px;font-size:13px;font-weight:600;cursor:pointer;transition:.15s;
   }
   .levels button.active{border-color:var(--accent);background:rgba(239,138,60,.16);color:var(--accent-2);}
@@ -169,6 +169,7 @@
   <div class="section-label">1 · Schwierigkeitsgrad</div>
   <div class="levels" id="levels">
     <button data-level="einsteiger">Einsteiger</button>
+    <button data-level="fortgeschritten">Fortgeschritten</button>
     <button data-level="geuebt" class="active">Geübt</button>
     <button data-level="anspruchsvoll">Anspruchsvoll</button>
   </div>
@@ -253,7 +254,8 @@ document.getElementById("logoSlot").innerHTML = logoSVG();
    STUFEN
    ========================================================= */
 const LEVELS = {
-  einsteiger: { label:"Einsteiger", desc:"Kooperativer Klient: öffnet sich leicht, geht gut mit der Phasenstruktur mit, wenig Widerstand. Ideal für die ersten Übungsgespräche." },
+  einsteiger: { label:"Einsteiger", desc:"Leichteste Stufe: Der Klient nennt Problem UND ein grobes Ziel gleich von selbst. So kannst du dich auf die Phasen ab der Auftragsklärung konzentrieren." },
+  fortgeschritten:{ label:"Fortgeschritten", desc:"Kooperativer Klient, der gut mitgeht – aber Ziel und alle Phasen musst du selbst durch Fragen erarbeiten. Wenig Widerstand." },
   geuebt:     { label:"Geübt",      desc:"Realistisch ambivalent: öffnet sich bei guten Fragen, bleibt bei schwachen Fragen vage. Gute Mischung aus machbar und fordernd." },
   anspruchsvoll:{ label:"Anspruchsvoll", desc:"Echter Widerstand: Ambivalenz, Abwehr, Themenwechsel. Tiefe nur bei wirklich präzisen Fragen. Für geübte Coaches." }
 };
